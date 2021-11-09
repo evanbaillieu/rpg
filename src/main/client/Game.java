@@ -30,22 +30,10 @@ public class Game {
 		this.marchant = this.marchantFactory.getMarchant();
 		this.joueur = createPerso();
 		System.out.println("bienvenue sur terre vous allez aire a la recherche d'arme ultime");
-		while(this.joueur.getPv() != 0 ){
-			Integer tour = 0;
-			System.out.println("tour n°" + tour);
-			if(tour % 2 == 0 && tour % 10 != 0){
-				this.combat();
-			}else if(tour % 2 != 0){
-				this.objetUtilisable();
-			}else {
-				this.decouvreMarchant();
-			}
-			tour++;
-		}
 		System.out.println(this.joueur);
 	}
 	
-	private void objetUtilisable() {
+	public void objetUtilisable() {
 		// TODO Auto-generated method stub
 		System.out.println("vous continuer a aire a la cherche un marchant ou un monstre plus fort");
 		System.out.println("vouler vous utilser un objet.");
@@ -57,7 +45,7 @@ public class Game {
 			switch(choix) {
 				case "1":
 					this.joueur.affichePotion();
-					int i = clavier.nextInt();
+					String i = clavier.nextLine();
 					System.out.println(this.joueur.utilisePotion(i));
 					break;
 				case "2":
@@ -69,6 +57,8 @@ public class Game {
 						System.out.println("na pas pue etre equiper elle neut doit pas etre compatible avec votre class");
 					}
 					break;
+				case "exit":
+					return;
 				default:
 					System.out.println("quelle voulait faire");
 			}
@@ -81,23 +71,22 @@ public class Game {
 		Arme main = new Hand("main", 0, 5, 0);
 		System.out.println("Bienvenue dans le jeu.");
 		System.out.println("elfe : 1, humain : 2, magicien : 3");
-		Integer choix = clavier.nextInt();
-		clavier.nextLine();
+		String choix = clavier.nextLine();
 		Playeur j = null;
 		
 		do {
 			System.out.println("choisier votre nom :");
 			String nom = clavier.nextLine();
 			switch(choix) {
-				case 1:
+				case "1":
 					System.out.println("bienvenue jeune elfe " + nom + ".");
 					 j = new Elfe(nom, main);
 					break;
-				case 2:
+				case "2":
 					System.out.println("bienvenue jeune elfe " + nom + ".");
 					 j = new Humain(nom, main);
 					 break;
-				case 3:
+				case "3":
 					System.out.println("bienvenue jeune elfe " + nom + ".");
 					 j = new Nain(nom, main);
 					 break;
@@ -147,7 +136,7 @@ public class Game {
 		}
 	}
 	
-	private void decouvreMarchant() {
+	public void decouvreMarchant() {
 		Scanner clavier = new Scanner(System.in);
 		String choix = "";
 		while(choix != "exit") {
@@ -161,7 +150,7 @@ public class Game {
 					this.acheteItem();
 					break;
 				case "exit":
-					break;
+					return;
 				default:
 					System.out.println("vieller saisir quelle chose de comprensible");
 			}
@@ -172,18 +161,23 @@ public class Game {
 		System.out.println("qu'elle item voulait vous acheter");
 		int c = clavier.nextInt();
 		Item item = this.marchant.achete(c);
-		System.out.println("voulais equiper tout de suite oui/non.\n non par defaults");
-		String choix = clavier.nextLine();
-		if(choix == "oui") {
-			if(this.joueur.changeArme(item)) {
-				System.out.println("n'a pas pue etre echanger a etait ajouter a votre inventaire");
+		if(item instanceof Arme) {
+			System.out.println("voulais equiper tout de suite oui/non.\n non par defaults");
+			String choix = clavier.nextLine();
+			if(choix == "oui") {
+				if(this.joueur.changeArme(item)) {
+					System.out.println("n'a pas pue etre echanger a etait ajouter a votre inventaire");
+				}else {
+					this.joueur.addItem(item);
+				}
 			}else {
 				this.joueur.addItem(item);
 			}
+			
 		}else {
-			this.joueur.addItem(item);
+			System.out.println("a etait ajouter dans votre inventaires");
+			this.joueur.achetePotion(item);
 		}
-		
 		
 	}
 }

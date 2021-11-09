@@ -84,12 +84,12 @@ public abstract class Playeur extends Personne {
 		this.inventaire.add(arme);
 	}
 	
-	public void achetePotion(Potion potion) {
+	public void achetePotion(Item potion) {
 		int flag = 0;
 		for(Item item: this.inventaire) {
 			if(item.equals(potion)) {
 				flag += 1;
-				((Potion) item).addQuantiter(potion.getQuantiter());
+				((Potion) item).addQuantiter(((Potion) potion).getQuantiter());
 			}
 		}
 		if(flag > 0) {
@@ -107,13 +107,15 @@ public abstract class Playeur extends Personne {
 		}
 	}
 	
-	public void affichePotion() {
+	public int affichePotion() {
+		int i = 0; 
 		for(Item item: this.inventaire) {
 			if(item instanceof Potion) {
 				System.out.println(item.toString());
+				i++;
 			}
-			
 		}
+		return i;
 	}
 	
 	public void finCombat(int xp, int or) {
@@ -130,14 +132,16 @@ public abstract class Playeur extends Personne {
 
 
 
-	public String utilisePotion(int index) {
+	public String utilisePotion(String index) {
 		// TODO Auto-generated method stub
-		Item p = this.inventaire.get(index);
+		Item p = this.inventaire.get(Integer.valueOf(index));
 		if(p instanceof PotionSoin) {
 			super.pv +=  ((PotionSoin) p).getSoin();
+			((PotionSoin) p).utilise();
 			return "vous avais " + this.getPv() + " pv"; 
 		}else if(p instanceof PotionEndurance){
 			this.endurance += ((PotionEndurance) p).getEndurance();
+			((PotionEndurance) p).utilise();
 			return "vous avais " + this.getEndurance() + " endurance";
 		}else {
 			return "se n'est pas un potion utilisable";
